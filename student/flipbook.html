@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <script>
+        if (!sessionStorage.getItem('siswaAuth')) window.location.replace('../login-siswa.html');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bijak Mengelola Uang | Saku Pintar</title>
+    <!-- Google Fonts: Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- CSS Global -->
+    <link rel="stylesheet" href="../shared/css/global.css">
+    <!-- CSS Khusus Siswa -->
+    <link rel="stylesheet" href="css/student-style.css">
+
+    <!-- SweetAlert2 untuk Popup -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- StPageFlip Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+
+    <style>
+        /* CSS untuk layar PC besar (Logo tetap di tengah) */
+        @media (min-width: 1025px) {
+            .nav-container {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            #btnToggleGlobalAudio {
+                margin-right: 0 !important;
+                /* Batalkan margin-right: auto dari JS */
+                z-index: 10;
+            }
+
+            .logo {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                margin: 0;
+                z-index: 5;
+            }
+
+            #userIdentityContainer {
+                margin-left: auto !important;
+                /* Dorong informasi user ke kanan */
+                z-index: 10;
+            }
+
+            .btn-home {
+                z-index: 10;
+            }
+        }
+
+        /* CSS untuk HP/Tablet landscape (lebar <= 1024px dan orientasi landscape) agar logo geser ke kiri mencegah tumpang tindih */
+        @media (max-width: 1024px) and (orientation: landscape) {
+            .nav-container {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                width: 100%;
+                gap: 15px;
+            }
+
+            #btnToggleGlobalAudio {
+                margin-right: 0 !important;
+                z-index: 10;
+            }
+
+            .logo {
+                position: static;
+                transform: none;
+                margin-right: auto !important;
+                /* Dorong informasi user ke kanan */
+                z-index: 10;
+            }
+
+            #userIdentityContainer {
+                margin-left: 0 !important;
+                /* Batalkan margin-left: auto dari JS */
+                z-index: 10;
+            }
+
+            .btn-home {
+                z-index: 10;
+            }
+        }
+
+        /* CSS untuk Tablet portrait (lebar 769px - 1024px dan orientasi portrait) agar logo tetap di tengah */
+        @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+            .nav-container {
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            #btnToggleGlobalAudio {
+                margin-right: 0 !important;
+                z-index: 10;
+            }
+
+            .logo {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                margin: 0;
+                z-index: 5;
+            }
+
+            #userIdentityContainer {
+                margin-left: auto !important;
+                z-index: 10;
+            }
+
+            .btn-home {
+                z-index: 10;
+            }
+        }
+
+        /* Desain Judul Utama Gaya Mengambang Premium */
+        .welcome-section h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 3.5rem;
+            color: #FFFFFF;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: bounceTitle 3s ease-in-out infinite;
+        }
+
+        @keyframes bounceTitle {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-1deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(1deg);
+            }
+        }
+
+        .welcome-section p {
+            font-size: 1.3rem;
+            color: #E0F7FA;
+            font-weight: 600;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+            margin-top: 5px;
+        }
+
+        /* Styling Buku Flipbook 3D */
+        .book-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        #book-container {
+            width: 900px;
+            height: 506px;
+            margin: 0 auto;
+            position: relative;
+            background-color: #fdfaf4;
+            border-radius: 12px;
+        }
+
+        .book {
+            width: 900px;
+            height: 506px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            background: #fdfaf4;
+            overflow: visible;
+        }
+
+        .my-page {
+            width: 450px;
+            height: 506px;
+            background-color: #fdfaf4;
+            box-sizing: border-box;
+        }
+
+        .page-content {
+            width: 100%;
+            height: 100%;
+            background-size: 200% 100%;
+            background-repeat: no-repeat;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+
+        .page-content-left {
+            background-position: left center;
+            border-radius: 12px 0 0 12px;
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .page-content-right {
+            background-position: right center;
+            border-radius: 0 12px 12px 0;
+            border-left: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Bayangan Lipatan di Tengah (Spine Shadow) */
+        .book-spine-shadow {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 32px;
+            transform: translateX(-50%);
+            background: linear-gradient(to right,
+                    rgba(0, 0, 0, 0) 0%,
+                    rgba(0, 0, 0, 0.15) 50%,
+                    rgba(0, 0, 0, 0) 100%);
+            pointer-events: none;
+            z-index: 1000;
+            transition: opacity 0.25s ease;
+            /* Transisi halus agar tidak patah */
+        }
+
+        .book-spine {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.08);
+            pointer-events: none;
+            z-index: 1001;
+            transition: opacity 0.25s ease;
+            /* Transisi halus agar tidak patah */
+        }
+
+        /* Sembunyikan garis/bayangan tengah saat lembaran sedang dibuka/dibalik */
+        #book-container.is-flipping .book-spine-shadow,
+        #book-container.is-flipping .book-spine {
+            opacity: 0;
+        }
+
+        /* Panel Panduan & Indikator */
+        .book-controls {
+            text-align: center;
+            margin-top: 25px;
+            font-family: 'Fredoka', 'Segoe UI', sans-serif;
+        }
+
+        .page-indicator {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .hint-text {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.9;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        /* Overlay untuk memaksa rotasi layar di HP */
+        .landscape-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #2980B9 0%, #6DD5FA 100%);
+            z-index: 100000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            box-sizing: border-box;
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .overlay-content {
+            max-width: 400px;
+        }
+
+        .phone-icon-wrapper {
+            position: relative;
+            font-size: 5rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: rotatePhone 2.5s infinite ease-in-out;
+        }
+
+        .rotate-arrow {
+            position: absolute;
+            font-size: 2.5rem;
+            bottom: -5px;
+            right: -15px;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        .landscape-overlay h2 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .landscape-overlay p {
+            font-size: 1.1rem;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+
+        @keyframes rotatePhone {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(-90deg);
+            }
+        }
+
+        /* Tampilkan overlay hanya di layar smartphone portrait (lebar <= 768px dan portrait) */
+        @media (max-width: 768px) and (orientation: portrait) {
+            .landscape-overlay {
+                display: flex;
+            }
+        }
+
+        /* Batasi overflow buku pada HP/Tablet agar animasi pembalikan kertas tidak menggeser viewport / background */
+        @media (max-width: 1024px) {
+            .book {
+                overflow: hidden !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Overlay Rotasi Layar (Khusus Mobile Portrait) -->
+    <div id="landscape-overlay" class="landscape-overlay">
+        <div class="overlay-content">
+            <div class="phone-icon-wrapper">
+                <span class="phone-icon">📱</span>
+                <span class="rotate-arrow">🔄</span>
+            </div>
+            <h2>Layar Mendatar Diperlukan</h2>
+            <p>Silakan putar smartphone Anda ke posisi <strong>Mendatar (Landscape)</strong> untuk membaca cerita dengan
+                nyaman! 📖✨</p>
+        </div>
+    </div>
+
+    <!-- Navigasi Atas -->
+    <nav class="student-nav">
+        <div class="container nav-container">
+            <div class="logo">Saku Pintar</div>
+            <a href="menu-belajar.html" class="btn btn-home">Kembali</a>
+        </div>
+    </nav>
+
+    <!-- Konten Utama -->
+    <main class="container">
+        <header class="welcome-section text-center">
+            <h1>Flipbook Kebutuhan Keinginan</h1>
+            <p>Membaca komik/cerita interaktif mengenai literasi keuangan!</p>
+        </header>
+
+        <!-- Area Buku -->
+        <div class="book-wrapper">
+            <!-- Container luar untuk penempatan dan pembatasan skala -->
+            <div id="book-container">
+                <div class="book" id="book">
+                    <!-- Halaman akan diinjeksi secara dinamis lewat JavaScript -->
+                </div>
+                <!-- Efek Bayangan & Garis Tengah Buku -->
+                <div class="book-spine-shadow"></div>
+                <div class="book-spine"></div>
+            </div>
+        </div>
+
+        <!-- Panel Informasi & Kontrol -->
+        <div class="book-controls">
+            <div class="page-indicator" id="page-indicator">Cerita 1 / 30</div>
+            <br>
+            <div class="hint-text">📖 Usap (swipe) halaman ganda atau klik tepi halaman untuk membalik</div>
+        </div>
+    </main>
+
+    <!-- Memuat Firebase SDK & Tracker (Untuk Fitur Kehadiran LMS & Log) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
+    <script src="../shared/js/firebase-db.js" defer></script>
+    <script src="../shared/js/presence-tracker.js" defer></script>
+
+    <!-- Memuat file JavaScript Global -->
+    <script src="../shared/js/utils.js"></script>
+
+    <script>
+        // Data path gambar flipbook (memuat 30 gambar halaman secara dinamis)
+        const pages = [];
+        for (let i = 1; i <= 30; i++) {
+            pages.push(`aset student/flipbook/${i}.png`);
+        }
+
+        let pageFlip = null;
+        const pageIndicator = document.getElementById('page-indicator');
+        const bookContainer = document.getElementById('book');
+
+        // Mengisi halaman buku secara dinamis ke dalam DOM sebelum inisialisasi PageFlip
+        function setupBookDOM() {
+            bookContainer.innerHTML = ''; // bersihkan kontainer
+
+            pages.forEach((imageUrl) => {
+                // Buat Halaman Kiri
+                const leftPage = document.createElement('div');
+                leftPage.className = 'my-page';
+                leftPage.innerHTML = `
+                    <div class="page-content page-content-left" style="background-image: url('${imageUrl}');"></div>
+                `;
+                bookContainer.appendChild(leftPage);
+
+                // Buat Halaman Kanan
+                const rightPage = document.createElement('div');
+                rightPage.className = 'my-page';
+                rightPage.innerHTML = `
+                    <div class="page-content page-content-right" style="background-image: url('${imageUrl}');"></div>
+                `;
+                bookContainer.appendChild(rightPage);
+            });
+        }
+
+        // Inisialisasi Pustaka St.PageFlip
+        function initBook() {
+            setupBookDOM();
+
+            // Buat objek PageFlip
+            pageFlip = new St.PageFlip(bookContainer, {
+                width: 450, // Lebar satu halaman ganda (900 / 2)
+                height: 506, // Tinggi halaman
+                size: "fixed",
+                showCover: false, // Langsung terbuka dari tengah (halaman ganda)
+                usePortrait: false, // Selalu dalam mode landscape ganda
+                drawShadow: true, // Gambar bayangan realistis
+                maxShadowOpacity: 0.15,
+                flippingTime: 1200, // Durasi balik halaman (ms) disesuaikan dengan SFX buka kertas
+                swipeDistance: 30, // Jarak geser minimum untuk memicu balik halaman
+                showPageCorners: true // Tunjukkan sudut yang dapat ditarik
+            });
+
+            // Muat halaman dari elemen HTML yang telah dibuat
+            pageFlip.loadFromHTML(document.querySelectorAll('.my-page'));
+
+            // Pasang event listener untuk memutar suara saat membalik halaman dimulai
+            pageFlip.on('changeState', (e) => {
+                if (e.data === 'flipping') {
+                    playFlipSound();
+                }
+
+                // Tambahkan kelas is-flipping untuk menyembunyikan garis/bayangan tengah saat lembaran sedang dibuka/dibalik
+                const container = document.getElementById('book-container');
+                if (e.data === 'flipping' || e.data === 'user_fold') {
+                    container.classList.add('is-flipping');
+                } else {
+                    container.classList.remove('is-flipping');
+                }
+            });
+
+            // Pasang event listener untuk memantau pembalikan halaman selesai
+            pageFlip.on('flip', (e) => {
+                const newPageIndex = e.data;
+                const currentStoryIndex = Math.floor(newPageIndex / 2) + 1;
+
+                // Perbarui teks indikator
+                pageIndicator.textContent = `Cerita ${currentStoryIndex} / ${pages.length}`;
+
+                // Catat log aktivitas belajar
+                if (typeof logActivity === 'function') {
+                    logActivity(`📖 Membalik cerita ke cerita ${currentStoryIndex}`);
+                }
+            });
+        }
+
+        // Penyelesaian membaca
+        function finishReading() {
+            if (typeof logActivity === 'function') {
+                logActivity('📖 Selesai membaca Flipbook Kebutuhan Keinginan (Halaman 30)', 100);
+            }
+            window.location.href = 'menu-belajar.html';
+        }
+
+        // Putar suara membalik halaman
+        function playFlipSound() {
+            const audio = new Audio('../sfx buka kertas.mp3');
+            audio.play().catch(() => { });
+        }
+
+        // Deteksi klik pada area buku untuk redirect pada halaman terakhir
+        bookContainer.addEventListener('click', (e) => {
+            if (!pageFlip) return;
+            const currentIndex = pageFlip.getCurrentPageIndex();
+            if (currentIndex >= 58) {
+                const rect = bookContainer.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                if (clickX > rect.width / 2) {
+                    finishReading();
+                }
+            }
+        });
+
+        // Deteksi usapan (swipe) ke kiri pada halaman terakhir untuk redirect
+        let startX = 0;
+
+        bookContainer.addEventListener('mousedown', (e) => {
+            startX = e.clientX;
+        });
+
+        bookContainer.addEventListener('mouseup', (e) => {
+            if (!pageFlip) return;
+            const currentIndex = pageFlip.getCurrentPageIndex();
+            if (currentIndex >= 58) {
+                const diffX = startX - e.clientX;
+                if (diffX > 50) { // geser ke kiri lebih dari 50px
+                    finishReading();
+                }
+            }
+        });
+
+        bookContainer.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+
+        bookContainer.addEventListener('touchend', (e) => {
+            if (!pageFlip) return;
+            const currentIndex = pageFlip.getCurrentPageIndex();
+            if (currentIndex >= 58) {
+                const diffX = startX - e.changedTouches[0].clientX;
+                if (diffX > 50) { // geser ke kiri lebih dari 50px
+                    finishReading();
+                }
+            }
+        }, { passive: true });
+
+        let lastBookWidth = 0;
+
+        // Responsivitas Buku pada Layar Kecil/Mobile (Skala lebar agar teks tetap terbaca jelas)
+        function adjustBookScale() {
+            const container = document.getElementById('book-container');
+            if (!container) return;
+            const wrapper = container.parentElement;
+            if (!wrapper) return;
+            const containerWidth = wrapper.clientWidth;
+
+            // Hindari pemrosesan jika lebar tidak berubah (mencegah loop resize akibat tinggi viewport bergeser di HP/address bar)
+            if (containerWidth === 0 || containerWidth === lastBookWidth) return;
+            lastBookWidth = containerWidth;
+
+            const bookWidth = 900; // Lebar standar buku
+
+            if (containerWidth < bookWidth) {
+                const scale = containerWidth / bookWidth;
+                container.style.transform = `scale(${scale})`;
+                container.style.transformOrigin = 'center top';
+                wrapper.style.height = `${506 * scale}px`;
+            } else {
+                container.style.transform = 'none';
+                wrapper.style.height = '506px';
+            }
+        }
+
+        window.addEventListener('resize', adjustBookScale);
+        window.addEventListener('load', adjustBookScale);
+
+        // Inisialisasi awal
+        document.addEventListener('DOMContentLoaded', () => {
+            initBook();
+            adjustBookScale();
+
+            // Coba kunci orientasi landscape jika didukung
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => { });
+            }
+
+            setTimeout(() => {
+                if (typeof logActivity === 'function') {
+                    logActivity('📖 Mulai membaca Flipbook Kebutuhan Keinginan');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>

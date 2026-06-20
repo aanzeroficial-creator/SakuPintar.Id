@@ -1,0 +1,506 @@
+/* 
+ * Proyek Web Edukasi Literasi Finansial PGSD
+ * Author: Aan Rifai (NIM: 2501050298, No. Absen: 28)
+ * Universitas Negeri Semarang (UNNES)
+ */
+
+html, body {
+    overscroll-behavior: none; /* Mencegah overscroll bounce */
+}
+
+body {
+    background-color: #85C1E9;
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-image: url('../../shared/assets/bg-pantai.png');
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    z-index: -2;
+    pointer-events: none;
+}
+
+/* Navigasi / HUD Game (Bukan bar kotak web) */
+.student-nav {
+    background-color: transparent;
+    color: white;
+    padding: 20px 0;
+    box-shadow: none;
+    position: relative;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    color: #10c2e2; 
+    font-size: 2.8rem;
+    font-weight: 800;
+    text-shadow: 2px 2px 0px #0b849b, 0 4px 10px rgba(0,0,0,0.1); 
+    letter-spacing: 2px;
+}
+
+.btn-home {
+    background-color: #E74C3C;
+    color: white;
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    border-radius: 20px;
+    box-shadow: 0 6px 0 #C0392B;
+    transition: all 0.1s;
+}
+
+.btn-home:hover {
+    background-color: #E74C3C;
+    color: white;
+    transform: translateY(2px);
+    box-shadow: 0 4px 0 #C0392B;
+}
+.btn-home:active {
+    transform: translateY(6px) scale(0.95);
+    box-shadow: 0 0 0 #C0392B;
+}
+
+/* Bagian Sambutan Game */
+.welcome-section {
+    margin: 30px 0 40px 0;
+}
+
+.welcome-section h1 {
+    color: white;
+    font-size: 3.8rem;
+    margin-bottom: 10px;
+    text-shadow: 4px 4px 0px var(--primary-teacher), 0 10px 20px rgba(0,0,0,0.3);
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.welcome-section p {
+    font-size: 1.4rem;
+    color: white;
+    font-weight: bold;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+}
+
+/* Grid Menu Utama - Responsif dengan Grid CSS */
+.menu-grid {
+    display: grid;
+    /* Membuat kolom menyesuaikan ukuran layar secara otomatis */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* Kartu Menu */
+.menu-card {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+    text-decoration: none;
+    color: #2C3E50;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.4);
+    transition: var(--transition);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+}
+
+/* Animasi saat kartu disorot mouse */
+.menu-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+}
+
+.menu-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.menu-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+/* Warna border spesifik tiap menu saat disorot */
+.card-mengenal:hover { border-color: var(--primary-color); }
+.card-eksplorasi:hover { border-color: var(--secondary-color); }
+.card-perencanaan:hover { border-color: var(--warning); }
+
+.icon-pembeli, .icon-jelajah, .icon-rencana, .icon-kekei {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    transform: scale(1.9);
+    margin-top: 35px;
+    margin-bottom: 5px;
+}
+
+/* Penyesuaian Mobile untuk Dashboard Siswa */
+@media (max-width: 768px) {
+    .icon-pembeli, .icon-jelajah, .icon-rencana, .icon-kekei {
+        width: 45px;
+        height: 45px;
+        transform: scale(1.9);
+        margin-top: 20px;
+        margin-bottom: 5px;
+    }
+    .welcome-section h1 {
+        font-size: 2.2rem;
+    }
+    .welcome-section p {
+        font-size: 1.1rem;
+    }
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    .menu-card {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .menu-icon {
+        font-size: 3.5rem;
+        margin-bottom: 10px;
+    }
+    .menu-card h2 {
+        font-size: 1.4rem;
+    }
+    .menu-card p {
+        font-size: 0.95rem;
+    }
+}
+
+/* ========================================================
+   Style Khusus Halaman "Mengenal Uang" (Video & Flip Card) 
+   ======================================================== */
+
+.video-section {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Container video responsif */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Rasio Aspek 16:9 untuk YouTube */
+    height: 0;
+    overflow: hidden;
+    border-radius: 15px;
+    background-color: #000;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Grid untuk Kartu 3D */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* Container kartu yang memfasilitasi efek 3D (perspective) */
+.flip-card {
+    background-color: transparent;
+    width: 100%;
+    height: 350px;
+    perspective: 1000px; /* Menentukan kedalaman efek 3D */
+    cursor: pointer;
+}
+
+/* Elemen dalam kartu yang akan diputar */
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); /* Animasi putaran yang halus */
+    transform-style: preserve-3d;
+}
+
+/* Jika kartu memiliki class 'flipped', putar 180 derajat */
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Sisi depan dan belakang kartu */
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Menyembunyikan bagian belakang untuk Safari */
+    backface-visibility: hidden;         /* Menyembunyikan sisi belakang saat kartu diputar */
+    border-radius: 20px;
+    /* Efek Glassmorphism agar senada dengan background belakang */
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #2C3E50; /* Warna teks gelap agar kontras dengan kaca cerah */
+    text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+}
+
+/* Gaya khusus Sisi Depan */
+.flip-card-front {
+    /* Background sudah diatur secara global di atas (glassmorphism) */
+}
+
+.flip-card-front h3 {
+    font-size: 2.5rem;
+    margin-top: 20px;
+    color: #2C3E50;
+}
+
+.flip-card-front .money-icon {
+    font-size: 4rem;
+}
+
+/* Gaya khusus Sisi Belakang */
+.flip-card-back {
+    transform: rotateY(180deg); /* Sisi ini sudah diputar 180 derajat sejak awal */
+}
+
+.flip-card-back h3 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    border-bottom: 2px solid rgba(44, 62, 80, 0.3);
+    padding-bottom: 10px;
+    color: #2C3E50;
+}
+
+.flip-card-back p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #34495E;
+    font-weight: 500;
+}
+
+/* Penyesuaian Responsif untuk Mobile (HP) Bergaya Native App */
+@media (max-width: 768px) {
+    /* Jadikan nav-container menyatu dengan background */
+    .student-nav {
+        padding: 10px 0 0 0;
+    }
+    .nav-container {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        background: transparent; /* Menyatu dengan background biru */
+        padding: 10px 15px;
+        box-shadow: none;
+        position: relative; /* Tidak mengambang agar rapi saat discroll */
+        z-index: 1000;
+        gap: 10px;
+    }
+    
+    /* Hapus jarak ekstra karena header tidak lagi fixed */
+    body {
+        padding-top: 0;
+    }
+
+    /* Baris 1: Logo (Full Width di Atas) */
+    .logo {
+        order: 1;
+        font-size: 2.3rem;
+        width: 100%;
+        text-align: center;
+        margin: 0 0 5px 0;
+        text-shadow: 2px 2px 0px #0b849b, 0 4px 10px rgba(0,0,0,0.1); /* Sama seperti tampilan PC */
+    }
+
+    /* Baris 2: Tombol Kembali & Musik */
+    .btn-home {
+        order: 2;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        margin: 0;
+        box-shadow: 0 4px 0 #C0392B;
+    }
+    
+    #btnToggleGlobalAudio {
+        order: 3;
+        margin: 0 !important;
+        font-size: 0.75rem !important;
+        padding: 6px 10px !important;
+        border-radius: 15px !important;
+    }
+
+    /* Baris 3: Profil & Keluar (Full Width di Bawah) */
+    #userIdentityContainer {
+        order: 4;
+        width: 100%;
+        margin: 0 !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #F0F3F4;
+        border-radius: 12px;
+        padding: 8px 10px !important;
+        box-sizing: border-box;
+    }
+    
+    #userIdentityContainer > div {
+        background: transparent !important;
+        color: #2C3E50 !important;
+        padding: 0 !important;
+        font-size: 0.8rem !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+        backdrop-filter: none !important;
+    }
+    
+    #userIdentityContainer > button {
+        font-size: 0.75rem !important;
+        padding: 5px 12px !important;
+        margin: 0 !important;
+        box-shadow: 0 3px 0 #C0392B !important;
+    }
+}
+
+/* ========================================================
+   Style Khusus Animasi Roulette Gacha Cerita
+   ======================================================== */
+.roulette-card {
+    width: 90px;
+    height: 120px;
+    margin: 0 5px;
+    border-radius: 10px;
+    background-color: #ecf0f1;
+    border: 4px solid #FFF;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.roulette-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.roulette-card-fallback {
+    font-size: 3rem;
+}
+
+@media (max-width: 480px) {
+    .quiz-card h2 {
+        font-size: 1.5rem;
+    }
+}
+
+
+/* =========================================
+   WIDGET MENGAMBANG (HANYA MOBILE)
+   ========================================= */
+.floating-widget {
+    display: none; /* Disembunyikan secara default untuk layar besar */
+}
+
+@media (max-width: 768px) {
+    .floating-widget {
+        display: flex;
+        position: fixed;
+        bottom: 100px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px solid #3498DB;
+        border-radius: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 9999;
+        align-items: center;
+        padding: 5px 15px 5px 5px;
+        gap: 10px;
+        backdrop-filter: blur(5px);
+        transition: transform 0.1s;
+        /* Default position is bottom right, but draggable via JS */
+    }
+
+    .floating-widget .drag-handle {
+        background: #3498DB;
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        cursor: grab;
+        user-select: none;
+        touch-action: none; /* Mencegah layar ikut tergeser saat didrag */
+    }
+
+    .floating-widget .drag-handle:active {
+        cursor: grabbing;
+    }
+
+    .floating-widget .widget-content {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+        max-width: 150px; /* Batasi lebar maksimal */
+    }
+
+    .floating-widget .widget-content strong {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+/* Proteksi Tampilan Angka Panjang di Layar Utama */
+#displayUangJajan, 
+#displayTotalPengeluaran, 
+#displaySisaUang,
+.expense-item .item-price {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    max-width: 100%;
+}
